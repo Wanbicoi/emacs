@@ -393,6 +393,15 @@
             ;; "~/org/synergieglobal.org"
             ))
 
+(defun my/skip-future-scheduled-entries ()
+  "Skip entries scheduled more than 8 hours in the future."
+  (let* ((scheduled (org-get-scheduled-time (point)))
+         (eight-hours-future (time-add (current-time) 
+                                       (seconds-to-time 28800)))
+         (should-skip (and scheduled
+                          (time-less-p eight-hours-future scheduled))))
+    (when should-skip
+      (progn (outline-next-heading) (point)))))
 (setq org-agenda-custom-commands
       '(("f" "Focus Tasks"
          ((agenda "" ((org-agenda-span 'week)))
@@ -400,16 +409,9 @@
                 ((org-agenda-overriding-header "Focus TODOs")))))
         ("j" "MHD Tasks"
          ((tags-todo "mhd"
-                     ((org-agenda-overriding-header "MHD Tasks")
+                     ((org-agenda-overriding-header "MHD Tasks (within 8h or unscheduled)")
                       (org-agenda-sorting-strategy '(scheduled-up priority-down))
-                      (org-agenda-skip-function
-                       (lambda ()
-                         (let ((scheduled (org-get-scheduled-time (point))))
-                           (when (and scheduled
-                                      (numberp scheduled)
-                                      (< (float-time scheduled)
-                                         (- (float-time) 28800)))
-                             (point-max)))))))))))
+                      (org-agenda-skip-function 'my/skip-future-scheduled-entries)))))))
 
 (setq org-agenda-sorting-strategy
       '((agenda habit-down time-up urgency-down category-keep)
