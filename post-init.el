@@ -242,11 +242,14 @@
 (use-package alert-toast
   :after alert)
 
-(use-package org-alert
-  :ensure t
-  :config
-  (setq org-alert-interval 180)
-  (org-alert-enable))
+;; (use-package org-alert
+;;   :ensure t
+;;   :config
+;;   (setq org-alert-interval 180)
+;;   (org-alert-enable))
+
+(setq org-refile-targets
+      '((nil :maxlevel . 4)))
 
 (use-package hl-todo
   :ensure t
