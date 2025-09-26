@@ -242,11 +242,11 @@
 (use-package alert-toast
   :after alert)
 
-;; (use-package org-alert
-;;   :ensure t
-;;   :config
-;;   (setq org-alert-interval 180)
-;;   (org-alert-enable))
+(use-package org-alert
+  :ensure t
+  :config
+  (setq org-alert-interval 180)
+  (org-alert-enable))
 
 (setq org-refile-targets
       '((nil :maxlevel . 4)))
@@ -326,8 +326,8 @@
 
 ;; SETTINGS
 
-(set-face-attribute 'help-key-binding nil :family "Cascadia Code" :height 120 :weight 'normal)
-(set-face-attribute 'default nil :family "Cascadia Code" :height 120 :weight 'normal)
+(set-face-attribute 'help-key-binding nil :family "Cascadia Code NF" :height 120 :weight 'normal)
+(set-face-attribute 'default nil :family "Cascadia Code NF" :height 110 :weight 'normal)
 ;; (set-face-attribute 'variable-pitch nil :family "Cascadia Code" :height 120 :weight: 'normal)
 
 (global-display-line-numbers-mode)
@@ -353,7 +353,7 @@
       '(
         ;; Jira Ticket under Inbox
         ("j" "Jira MHD" entry (file+headline +org-capture-todo-file "Inbox")
-         "* TODO %:annotation :mhd:"
+         "* TODO [/] %:annotation :mhd:"
          :immediate-finish t
          :prepend t
          :jump-to-captured t)
@@ -387,7 +387,6 @@
 (setq org-enforce-todo-checkbox-dependencies t)
 (setq org-enforce-todo-dependencies t)
 (setq org-agenda-dim-blocked-tasks t)
-(setq org-hierarchical-todo-statistics t)
 
 (setq org-agenda-files
       (list +org-capture-todo-file
@@ -407,11 +406,12 @@
       (progn (outline-next-heading) (point)))))
 (setq org-agenda-custom-commands
       '(("f" "Focus Tasks"
-         ((agenda "" ((org-agenda-span 'week)))
-          (tags "focus"
-                ((org-agenda-overriding-header "Focus TODOs")))))
+         ((tags "focus"
+                ((org-agenda-overriding-header "Focus TODOs")))
+          (agenda "" ((org-agenda-span 'week)))))
         ("j" "MHD Tasks"
-         ((tags-todo "mhd"
+         ((agenda "" ((org-agenda-span 'day)))
+          (tags-todo "mhd"
                      ((org-agenda-overriding-header "MHD Tasks (within 8h or unscheduled)")
                       (org-agenda-sorting-strategy '(scheduled-up priority-down))
                       (org-agenda-skip-function 'my/skip-future-scheduled-entries)))))))
@@ -421,7 +421,7 @@
         (todo timestamp-up priority-down)
         (tag timestamp-up priority-down)
         (search category-keep)))
-
+(setq org-agenda-window-setup 'current-window)
 (setq org-return-follows-link t)
 
 (global-set-key (kbd "<f5>") 'org-capture)
@@ -429,8 +429,9 @@
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((shell . t)))
+(setq org-confirm-babel-evaluate nil)
 
-(global-visual-line-mode)
+;; (global-visual-line-mode)
 (electric-pair-mode 1)
 (electric-quote-mode 1)
 
